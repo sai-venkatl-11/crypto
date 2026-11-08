@@ -1,0 +1,20 @@
+# 24/7 paper engine on a Linux server (Ubuntu, Oracle Cloud, AWS, DigitalOcean).
+#   sudo cp deploy/cdx-paper.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now cdx-paper
+#   journalctl -u cdx-paper -f          # live log
+# Assumes the repo is at /home/ubuntu/crypto and runs as user ubuntu; edit both if different.
+[Unit]
+Description=CoinDCX crypto paper trader
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/crypto
+ExecStart=/usr/bin/python3 -m cdx.app paper
+Restart=always
+RestartSec=15
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
